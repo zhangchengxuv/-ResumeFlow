@@ -10,7 +10,8 @@ ResumeFlow 是一个本地优先的 Chromium 浏览器扩展。它使用规则�
 - 综合 label、placeholder、name/id、ARIA、autocomplete、邻近文字和冲突词进行评分
 - 展示置信度、评分依据，允许逐项取消或手动修改映射
 - 通过原生 value setter 兼容 React/Vue 控制表单，并触发 `input`、`change`、`blur`
-- 管理多段教育、项目、实习/工作经历，以及可复制或插入当前网页的常用文本
+- 管理多段教育、项目、实习/工作经历，以及可复制或插入当前网页的资料库内容
+- 资料库支持普通条目和分组条目；项目、教育、实习、获奖分组可维护多个子项，并根据当前网页字段推荐最合适的子项
 - 附带完全虚构的 Demo Resume 和本地字段识别测试页
 
 ## 开发与验证
@@ -62,7 +63,7 @@ src/background/   Side Panel 行为与 Service Worker
 src/content/      DOM 扫描和可靠填表
 src/matcher/      关键词规则与评分器
 src/storage/      Demo 数据及本地持久化
-src/adapters/     Resume Schema 到可填写值的转换
+src/adapters/     Resume Schema 到可填写值的转换，以及资料库推荐
 src/sidepanel/    React Side Panel 与四个功能页面
 src/components/   通用 UI 组件
 src/types/        数据模型与消息协议
@@ -74,6 +75,7 @@ tests/            Matcher 和 Form Filler 自动化测试
 
 - V0.1 使用规则匹配，不使用 AI；新网站的特殊文案可能需要手动改映射。
 - 多段经历自动填表时默认使用第一条记录。重复表单分组的条目索引识别留待后续版本。
+- 资料库旧版平铺常用文本会自动迁移为普通条目；无法自动判断父级分组的旧数据不会被强行归组。
 - 可扫描开放的 Shadow DOM，无法访问浏览器安全模型禁止的 closed Shadow DOM、跨域 iframe、`chrome://` 与 `edge://` 页面。
 - 网站自行实现的复杂下拉框可能需要站点适配器；原生 select、input、radio、checkbox 和 contenteditable 已支持。
 - 数据尚未本地加密；存储接口已独立封装，便于后续加入加密层。

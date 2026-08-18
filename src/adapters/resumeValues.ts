@@ -10,7 +10,10 @@ const snippetTitleByPath: Partial<Record<ResumeFieldPath, string>> = {
 export function getResumeValue(resume: Resume, path: ResumeFieldPath): string {
   if (path.startsWith('snippets.')) {
     const title = snippetTitleByPath[path]
-    return resume.snippets.find((item) => item.title === title || item.title.startsWith(`${title} `))?.content ?? ''
+    const item = resume.libraryItems.find((entry) =>
+      entry.itemType === 'plain' && title && (entry.title === title || entry.title.startsWith(`${title} `)),
+    )
+    return item?.itemType === 'plain' ? item.content : ''
   }
   const [section, key] = path.split('.') as [keyof Pick<Resume, 'basic' | 'education' | 'projects' | 'experience' | 'skills'>, string]
   const value = resume[section]
