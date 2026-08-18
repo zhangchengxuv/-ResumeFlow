@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ResumeFlow 字段识别测试页</title>
+  <style>
+    :root { font-family: Inter, system-ui, "Microsoft YaHei", sans-serif; color: #20252b; background: #f4f6f8; }
+    * { box-sizing: border-box; }
+    body { max-width: 920px; margin: 0 auto; padding: 36px 24px 80px; }
+    header { margin-bottom: 24px; }
+    h1 { margin: 0 0 6px; font-size: 26px; }
+    header p { margin: 0; color: #69737e; }
+    .tip { margin: 18px 0 24px; padding: 12px 14px; border-left: 3px solid #446b8f; background: #eaf1f7; font-size: 13px; }
+    form { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; padding: 22px; border: 1px solid #dfe4e9; border-radius: 10px; background: white; }
+    fieldset { grid-column: 1 / -1; margin: 0; padding: 14px; border: 1px solid #dfe4e9; border-radius: 8px; }
+    legend { padding: 0 6px; font-weight: 650; }
+    label, .field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; }
+    input, textarea, select, [contenteditable] { min-height: 38px; padding: 8px 10px; border: 1px solid #bcc5ce; border-radius: 6px; background: white; font: inherit; font-weight: 400; outline: none; }
+    input:focus, textarea:focus, select:focus, [contenteditable]:focus { border-color: #446b8f; box-shadow: 0 0 0 2px #dce8f2; }
+    textarea { min-height: 92px; resize: vertical; }
+    .wide { grid-column: 1 / -1; }
+    .inline { display: flex; flex-direction: row; align-items: center; gap: 18px; margin-top: 8px; }
+    .inline label { flex-direction: row; align-items: center; font-weight: 400; }
+    .inline input { min-height: auto; }
+    button { height: 38px; padding: 0 16px; border: 0; border-radius: 6px; color: white; background: #446b8f; font-weight: 650; cursor: pointer; }
+    #event-log { margin-top: 22px; padding: 14px; border: 1px solid #dfe4e9; border-radius: 8px; color: #69737e; background: white; font: 12px/1.6 ui-monospace, monospace; white-space: pre-wrap; }
+    @media (max-width: 680px) { form { grid-template-columns: 1fr; } .wide, fieldset { grid-column: auto; } }
+  </style>
+</head>
+<body>
+  <header><h1>ResumeFlow 字段识别测试页</h1><p>使用多种 HTML 标注方式验证扫描、匹配和事件触发。</p></header>
+  <div class="tip">加载扩展后打开 Side Panel，检查识别结果，再主动点击“填写”。下方日志会记录 input、change 和 blur 事件。</div>
+  <form id="application-form" autocomplete="on">
+    <label for="candidate-name">姓名<input id="candidate-name" type="text" autocomplete="name" /></label>
+    <div class="field"><span>联系电话</span><input type="tel" name="mobile_phone" placeholder="请输入手机号" autocomplete="tel" /></div>
+    <label>电子邮箱<input type="email" name="contact_email" autocomplete="email" /></label>
+    <div class="field"><span>毕业院校</span><input type="text" placeholder="请输入学校名称" /></div>
+    <div class="field"><span id="major-label">主修方向</span><input type="text" aria-labelledby="major-label" aria-label="所学专业" /></div>
+    <label>最高学历<select name="education_level"><option value="">请选择</option><option>大专</option><option>本科</option><option>硕士</option><option>博士</option></select></label>
+    <div class="field"><span>项目</span><input type="text" aria-label="项目名称" /></div>
+    <label class="wide">项目描述<textarea name="project_description" placeholder="介绍项目背景、职责和成果"></textarea></label>
+    <div class="field wide">自我评价<div contenteditable="true" role="textbox" aria-label="自我评价" data-placeholder="请介绍你的优势"></div></div>
+    <label>期望工作地点<input type="text" name="desired_city" placeholder="城市" /></label>
+    <fieldset><legend>性别</legend><div class="inline"><label><input type="radio" name="gender" value="男" />男</label><label><input type="radio" name="gender" value="女" />女</label></div></fieldset>
+    <fieldset><legend>补充选项</legend><div class="inline"><label><input type="checkbox" name="available" value="是" />可立即到岗</label><label><input type="checkbox" name="privacy" value="同意" />同意隐私条款</label></div></fieldset>
+    <button type="button" id="clear-button">清空表单与日志</button>
+  </form>
+  <pre id="event-log">等待字段事件…</pre>
+  <script>
+    const log = document.querySelector('#event-log')
+    document.querySelector('#application-form').addEventListener('input', (event) => {
+      const target = event.target
+      log.textContent += `\ninput  → ${target.name || target.id || target.getAttribute('aria-label') || target.tagName}`
+    }, true)
+    document.querySelector('#application-form').addEventListener('change', (event) => {
+      const target = event.target
+      log.textContent += `\nchange → ${target.name || target.id || target.getAttribute('aria-label') || target.tagName}`
+    }, true)
+    document.querySelector('#application-form').addEventListener('blur', (event) => {
+      const target = event.target
+      log.textContent += `\nblur   → ${target.name || target.id || target.getAttribute('aria-label') || target.tagName}`
+    }, true)
+    document.querySelector('#clear-button').addEventListener('click', () => {
+      document.querySelector('#application-form').reset()
+      document.querySelectorAll('[contenteditable]').forEach((element) => { element.textContent = '' })
+      log.textContent = '表单已清空，等待字段事件…'
+    })
+  </script>
+</body>
+</html>
